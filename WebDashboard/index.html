@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Auto Backup - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #4f46e5;
+        }
+        
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        
+        .files-section {
+            padding: 0 30px 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .files-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .files-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            color: #475569;
+            font-weight: 600;
+        }
+        
+        .files-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .file-type {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .type-image { background: #dbeafe; color: #1d4ed8; }
+        .type-video { background: #fce7f3; color: #be185d; }
+        .type-doc { background: #dcfce7; color: #166534; }
+        .type-audio { background: #fef3c7; color: #92400e; }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn {
+            background: #10b981;
+            color: white;
+        }
+        
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            background: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            color: #64748b;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 30px;
+            color: #92400e;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .files-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 My Auto Backup</h1>
+            <p>Personal Backup System Dashboard</p>
+        </div>
+        
+        <div class="warning">
+            ⚠️ <strong>Warning:</strong> This dashboard is for personal use only. Do not share access with anyone.
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Files</h3>
+                <div class="stat-value" id="totalFiles">0</div>
+                <p>Backed up files</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Storage Used</h3>
+                <div class="stat-value" id="storageUsed">0 MB</div>
+                <p>Cloud storage</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Last Backup</h3>
+                <div class="stat-value" id="lastBackup">Never</div>
+                <p>Date & time</p>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Status</h3>
+                <div class="stat-value">🟢 Active</div>
+                <p>Auto backup running</p>
+            </div>
+        </div>
+        
+        <div class="files-section">
+            <h2 class="section-title">📂 Recent Files</h2>
+            <table class="files-table" id="filesTable">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="filesBody">
+                    <!-- Files will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>🔒 <strong>My Auto Backup v1.0.0</strong> - Personal Use Only</p>
+            <p>© 2026 - All rights reserved</p>
+        </div>
+    </div>
+
+    <script>
+        // Mock data for demonstration
+        const mockFiles = [
+            { name: "vacation.jpg", type: "image", size: "2.4 MB", date: "2024-01-15" },
+            { name: "meeting.mp4", type: "video", size: "45.2 MB", date: "2024-01-14" },
+            { name: "invoice.pdf", type: "doc", size: "1.1 MB", date: "2024-01-13" },
+            { name: "song.mp3", type: "audio", size: "8.5 MB", date: "2024-01-12" },
+            { name: "app.apk", type: "app", size: "32.7 MB", date: "2024-01-11" }
+        ];
+        
+        // Update stats
+        document.getElementById('totalFiles').textContent = '142';
+        document.getElementById('storageUsed').textContent = '1.2 GB';
+        document.getElementById('lastBackup').textContent = '5 min ago';
+        
+        // Load files
+        const filesBody = document.getElementById('filesBody');
+        
+        mockFiles.forEach(file => {
+            const row = document.createElement('tr');
+            
+            // Get type class
+            let typeClass = '';
+            let typeText = '';
+            
+            switch(file.type) {
+                case 'image':
+                    typeClass = 'type-image';
+                    typeText = '📷 Image';
+                    break;
+                case 'video':
+                    typeClass = 'type-video';
+                    typeText = '🎥 Video';
+                    break;
+                case 'doc':
+                    typeClass = 'type-doc';
+                    typeText = '📄 Document';
+                    break;
+                case 'audio':
+                    typeClass = 'type-audio';
+                    typeText = '🎵 Audio';
+                    break;
+                default:
+                    typeClass = 'type-doc';
+                    typeText = '📦 File';
+            }
+            
+            row.innerHTML = `
+                <td><strong>${file.name}</strong></td>
+                <td><span class="file-type ${typeClass}">${typeText}</span></td>
+                <td>${file.size}</td>
+                <td>${file.date}</td>
+                <td>
+                    <button class="action-btn download-btn" onclick="downloadFile('${file.name}')">
+                        Download
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteFile('${file.name}')">
+                        Delete
+                    </button>
+                </td>
+            `;
+            
+            filesBody.appendChild(row);
+        });
+        
+        // Action functions
+        function downloadFile(filename) {
+            alert(`Downloading: ${filename}\n\nNote: This is a demo. In real app, file will be downloaded from Cloudinary.`);
+        }
+        
+        function deleteFile(filename) {
+            if(confirm(`Are you sure you want to delete "${filename}"?`)) {
+                alert(`File "${filename}" deleted.\n\nNote: This is a demo. In real app, file will be deleted from Cloudinary.`);
+            }
+        }
+        
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            console.log('Refreshing data...');
+        }, 30000);
+    </script>
+</body>
+</html>
