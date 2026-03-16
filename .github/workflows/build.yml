@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Kotlin APK
 
 on:
   push:
@@ -12,22 +12,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
       - name: Make Gradlew Executable
         run: chmod +x gradlew
         working-directory: AndroidApp
 
-      - name: Build APK
+      - name: Build Debug APK
         run: ./gradlew assembleDebug
         working-directory: AndroidApp
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: Kotlin-App-APK
           path: AndroidApp/app/build/outputs/apk/debug/app-debug.apk
